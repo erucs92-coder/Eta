@@ -20,6 +20,9 @@ internal object AgentPromptBuilder {
             messages.put(systemMessage(config.systemPrompt))
         }
         messages.put(
+            systemMessage("Todo el contenido visible para el usuario debe estar en español.")
+        )
+        messages.put(
             systemMessage(
                 "你可以操作当前 Android 手机。涉及当前时间、相对时间或所在位置时先调用 get_current_context。" +
                     "你是主动完成任务的手机 Agent，不是只提供建议的问答助手。只要用户目标会因手机中的真实上下文而明显受益，" +

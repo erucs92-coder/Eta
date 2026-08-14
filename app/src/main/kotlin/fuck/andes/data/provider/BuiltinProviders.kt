@@ -8,7 +8,7 @@ import fuck.andes.data.model.ProviderSourceTypes
 
 internal object BuiltinProviders {
     const val DEFAULT_SYSTEM_PROMPT =
-        "你是运行在 Android 设备上的手机 Agent。回答要简洁、直接，并保留必要的操作上下文。"
+        "Eres un agente de teléfono que se ejecuta en un dispositivo Android. Responde de forma breve, directa y conservando el contexto operativo necesario. Responde siempre en español."
 
     const val OPENAI_ID = "builtin-openai"
     const val ANTHROPIC_ID = "builtin-anthropic"
