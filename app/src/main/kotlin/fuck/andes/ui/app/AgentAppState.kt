@@ -67,6 +67,7 @@ import fuck.andes.ui.model.ToolActivityMessageUi
 import fuck.andes.ui.model.ToolGroupUi
 import fuck.andes.ui.model.ToolItemUi
 import fuck.andes.ui.model.UserMessageUi
+import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlinx.coroutines.CancellationException
@@ -1770,6 +1771,7 @@ internal class AgentAppState(
     }
 
     private fun refreshConversationSummaries() {
+        val locale = context.resources.configuration.locales[0] ?: Locale.getDefault()
         val summaries = conversationsById.entries
             .sortedByDescending { (id, _) ->
                 conversationUpdatedAt[id] ?: 0L
@@ -1794,9 +1796,11 @@ internal class AgentAppState(
                         else -> "直接输入问题，必要时 Agent 会操作手机"
                     }.take(MAX_PREVIEW_CHARS),
                     timeLabel = if (state.isStreaming) {
-                        "现在"
+                        ConversationTimeLabels.nowLabel(locale)
                     } else {
-                        conversationUpdatedAt[id]?.let(ConversationTimeLabels::label) ?: "最近"
+                        conversationUpdatedAt[id]?.let { updatedAt ->
+                            ConversationTimeLabels.label(timestampMillis = updatedAt, locale = locale)
+                        } ?: ConversationTimeLabels.recentLabel(locale)
                     },
                     mode = ConversationModeUi.Chat,
                     isActiveRun = state.isStreaming,

@@ -4,6 +4,7 @@ import fuck.andes.agent.device.DeviceLocationProvider
 import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
+import java.util.Locale
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -24,6 +25,7 @@ class DeviceContextToolTest {
                     accuracyMeters = 18.6f,
                     ageMillis = 42_900L,
                 ),
+                locale = Locale.CHINA,
             )
         )
 
@@ -48,11 +50,13 @@ class DeviceContextToolTest {
                     ZoneId.of("Asia/Kathmandu"),
                 ),
                 location = DeviceLocationProvider.Result.Unavailable("permission_required"),
+                locale = Locale.US,
             )
         )
 
         assertEquals("2026-01-01T05:45:00+05:45", result.getString("datetime"))
         assertEquals("Asia/Kathmandu", result.getString("timezone"))
+        assertEquals("Thursday", result.getString("weekday"))
         result.getJSONObject("location").run {
             assertEquals("permission_required", getString("status"))
             assertFalse(has("latitude"))

@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -57,6 +58,7 @@ import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
 import com.composables.icons.lucide.R as LucideR
+import fuck.andes.ui.app.ConversationTimeLabels
 import fuck.andes.ui.model.ConversationPaneUiState
 import fuck.andes.ui.model.ConversationSummaryUi
 import kotlin.math.roundToInt
@@ -248,6 +250,7 @@ private fun ConversationPanePanel(
     modifier: Modifier = Modifier,
 ) {
     val query = state.searchQuery.trim()
+    val locale = LocalContext.current.resources.configuration.locales[0]
     val visibleConversations = remember(state.conversations, query) {
         if (query.isBlank()) {
             state.conversations
@@ -258,7 +261,7 @@ private fun ConversationPanePanel(
             }
         }
     }
-    val groups = remember(visibleConversations) { visibleConversations.groupForDrawer() }
+    val groups = remember(visibleConversations, locale) { visibleConversations.groupForDrawer(locale) }
 
     Surface(
         modifier = modifier
@@ -589,11 +592,11 @@ private data class ConversationDrawerGroup(
     val items: List<ConversationSummaryUi>,
 )
 
-private fun List<ConversationSummaryUi>.groupForDrawer(): List<ConversationDrawerGroup> {
+private fun List<ConversationSummaryUi>.groupForDrawer(locale: java.util.Locale): List<ConversationDrawerGroup> {
     if (isEmpty()) return emptyList()
     val groups = mutableListOf<ConversationDrawerGroup>()
     for (conversation in this) {
-        val label = conversation.drawerSectionLabel()
+        val label = conversation.drawerSectionLabel(locale)
         val last = groups.lastOrNull()
         if (last?.label == label) {
             groups[groups.lastIndex] = last.copy(items = last.items + conversation)
@@ -604,8 +607,8 @@ private fun List<ConversationSummaryUi>.groupForDrawer(): List<ConversationDrawe
     return groups
 }
 
-private fun ConversationSummaryUi.drawerSectionLabel(): String = when {
-    isPinned -> "置顶"
-    timeLabel == "现在" || timeLabel == "最近" || ":" in timeLabel -> "今天"
+private fun ConversationSummaryUi.drawerSectionLabel(locale: java.util.Locale): String = when {
+    isPinned -> ConversationTimeLabels.pinnedSectionLabel(locale)
+    ConversationTimeLabels.isTodaySectionLabel(timeLabel, locale) -> ConversationTimeLabels.todaySectionLabel(locale)
     else -> timeLabel
 }

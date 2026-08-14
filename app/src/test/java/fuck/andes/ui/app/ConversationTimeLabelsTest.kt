@@ -39,7 +39,24 @@ class ConversationTimeLabelsTest {
         assertEquals("最近", label(0L, millis(2026, Calendar.JULY, 4, 19, 32)))
     }
 
+    @Test
+    fun labelFollowsRequestedLocale() {
+        val now = millis(2026, Calendar.JULY, 4, 19, 32, locale = Locale.US)
+
+        assertEquals("Yesterday", label(millis(2026, Calendar.JULY, 3, 23, 59, locale = Locale.US), now, Locale.US))
+        assertEquals("Mon", label(millis(2026, Calendar.JUNE, 29, 8, 0, locale = Locale.US), now, Locale.US))
+        assertEquals("Recent", label(0L, now, Locale.US))
+        assertEquals("Now", ConversationTimeLabels.nowLabel(Locale.US))
+        assertEquals("Today", ConversationTimeLabels.todaySectionLabel(Locale.US))
+        assertEquals("Pinned", ConversationTimeLabels.pinnedSectionLabel(Locale.US))
+        assertEquals("Ahora", ConversationTimeLabels.nowLabel(Locale("es", "ES")))
+        assertEquals("Fijado", ConversationTimeLabels.pinnedSectionLabel(Locale("es", "ES")))
+    }
+
     private fun label(timestamp: Long, now: Long): String =
+        label(timestamp, now, locale)
+
+    private fun label(timestamp: Long, now: Long, locale: Locale): String =
         ConversationTimeLabels.label(
             timestampMillis = timestamp,
             nowMillis = now,
@@ -53,6 +70,7 @@ class ConversationTimeLabelsTest {
         day: Int,
         hour: Int,
         minute: Int,
+        locale: Locale = this.locale,
     ): Long =
         Calendar.getInstance(timeZone, locale).apply {
             clear()

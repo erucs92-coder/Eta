@@ -17,11 +17,16 @@ internal object DeviceContextTool {
     fun current(
         context: Context,
         clock: Clock = Clock.systemDefaultZone(),
-    ): String = current(clock, DeviceLocationProvider.latest(context))
+    ): String = current(
+        clock = clock,
+        location = DeviceLocationProvider.latest(context),
+        locale = context.resources.configuration.locales[0] ?: Locale.getDefault(),
+    )
 
     internal fun current(
         clock: Clock,
         location: DeviceLocationProvider.Result,
+        locale: Locale = Locale.getDefault(),
     ): String {
         val localTime = ZonedDateTime.now(clock).truncatedTo(ChronoUnit.SECONDS)
         return JSONObject()
@@ -29,7 +34,7 @@ internal object DeviceContextTool {
             .put("timezone", localTime.zone.id)
             .put(
                 "weekday",
-                localTime.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.SIMPLIFIED_CHINESE),
+                localTime.dayOfWeek.getDisplayName(TextStyle.FULL, locale),
             )
             .put("location", location.toJson())
             .toString()

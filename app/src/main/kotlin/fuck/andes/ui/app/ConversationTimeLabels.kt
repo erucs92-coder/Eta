@@ -8,7 +8,6 @@ import java.util.TimeZone
 
 internal object ConversationTimeLabels {
     private const val DAY_MS = 24L * 60L * 60L * 1000L
-    private val weekdayLabels = arrayOf("周日", "周一", "周二", "周三", "周四", "周五", "周六")
 
     fun label(
         timestampMillis: Long,
@@ -16,7 +15,7 @@ internal object ConversationTimeLabels {
         locale: Locale = Locale.getDefault(),
         timeZone: TimeZone = TimeZone.getDefault(),
     ): String {
-        if (timestampMillis <= 0L) return "最近"
+        if (timestampMillis <= 0L) return recentLabel(locale)
 
         val nowStart = startOfDay(nowMillis, locale, timeZone)
         val targetStart = startOfDay(timestampMillis, locale, timeZone)
@@ -24,13 +23,33 @@ internal object ConversationTimeLabels {
 
         return when {
             dayDelta <= 0 -> format("HH:mm", timestampMillis, locale, timeZone)
-            dayDelta == 1 -> "昨天"
+            dayDelta == 1 -> yesterdayLabel(locale)
             dayDelta in 2..6 -> weekdayLabel(timestampMillis, locale, timeZone)
             sameYear(timestampMillis, nowMillis, locale, timeZone) ->
                 format("M-d", timestampMillis, locale, timeZone)
             else -> format("yyyy-M-d", timestampMillis, locale, timeZone)
         }
     }
+
+    fun nowLabel(locale: Locale = Locale.getDefault()): String =
+        localizedLabel(locale, chinese = "现在", spanish = "Ahora", default = "Now")
+
+    fun recentLabel(locale: Locale = Locale.getDefault()): String =
+        localizedLabel(locale, chinese = "最近", spanish = "Reciente", default = "Recent")
+
+    fun todaySectionLabel(locale: Locale = Locale.getDefault()): String =
+        localizedLabel(locale, chinese = "今天", spanish = "Hoy", default = "Today")
+
+    fun pinnedSectionLabel(locale: Locale = Locale.getDefault()): String =
+        localizedLabel(locale, chinese = "置顶", spanish = "Fijado", default = "Pinned")
+
+    fun yesterdayLabel(locale: Locale = Locale.getDefault()): String =
+        localizedLabel(locale, chinese = "昨天", spanish = "Ayer", default = "Yesterday")
+
+    fun isTodaySectionLabel(
+        timeLabel: String,
+        locale: Locale = Locale.getDefault(),
+    ): Boolean = timeLabel == nowLabel(locale) || timeLabel == recentLabel(locale) || ":" in timeLabel
 
     private fun startOfDay(millis: Long, locale: Locale, timeZone: TimeZone): Long =
         Calendar.getInstance(timeZone, locale).apply {
@@ -53,8 +72,7 @@ internal object ConversationTimeLabels {
     }
 
     private fun weekdayLabel(millis: Long, locale: Locale, timeZone: TimeZone): String {
-        val calendar = Calendar.getInstance(timeZone, locale).apply { timeInMillis = millis }
-        return weekdayLabels[calendar.get(Calendar.DAY_OF_WEEK) - 1]
+        return format("EEE", millis, locale, timeZone)
     }
 
     private fun format(
@@ -64,4 +82,15 @@ internal object ConversationTimeLabels {
         timeZone: TimeZone,
     ): String =
         SimpleDateFormat(pattern, locale).also { it.timeZone = timeZone }.format(Date(millis))
+
+    private fun localizedLabel(
+        locale: Locale,
+        chinese: String,
+        spanish: String,
+        default: String,
+    ): String = when (locale.language.lowercase(Locale.ROOT)) {
+        "zh" -> chinese
+        "es" -> spanish
+        else -> default
+    }
 }
