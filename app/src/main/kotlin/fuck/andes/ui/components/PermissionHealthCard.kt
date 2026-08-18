@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import fuck.andes.R
 import fuck.andes.ui.model.PermissionHealthItemUi
 import fuck.andes.ui.model.PermissionHealthUiState
 import fuck.andes.ui.model.PermissionStatusUi
@@ -41,13 +43,17 @@ fun PermissionHealthCard(
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "权限健康",
+                    text = stringResource(R.string.permission_health_title),
                     modifier = Modifier.weight(1f),
                     style = MiuixTheme.textStyles.headline1,
                     color = MiuixTheme.colorScheme.onSurfaceContainer,
                 )
                 Text(
-                    text = if (issueCount == 0) "正常" else "${issueCount} 项需关注",
+                    text = if (issueCount == 0) {
+                        stringResource(R.string.permission_health_ok)
+                    } else {
+                        stringResource(R.string.permission_health_issue_count, issueCount)
+                    },
                     style = MiuixTheme.textStyles.body2,
                     color = if (issueCount == 0) {
                         MiuixTheme.colorScheme.onSurfaceVariantActions
@@ -114,9 +120,10 @@ private fun PermissionStatusIcon(status: PermissionStatusUi) {
     }
 }
 
+@Composable
 private fun statusLabel(status: PermissionStatusUi): String = when (status) {
-    PermissionStatusUi.Available -> "正常"
-    PermissionStatusUi.Missing -> "缺失"
-    PermissionStatusUi.Warning -> "异常"
-    PermissionStatusUi.Disabled -> "未启用"
+    PermissionStatusUi.Available -> stringResource(R.string.permission_status_normal)
+    PermissionStatusUi.Missing -> stringResource(R.string.permission_status_missing)
+    PermissionStatusUi.Warning -> stringResource(R.string.permission_status_warning)
+    PermissionStatusUi.Disabled -> stringResource(R.string.permission_status_disabled_state)
 }
