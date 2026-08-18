@@ -1796,7 +1796,7 @@ internal class AgentAppState(
                     timeLabel = if (state.isStreaming) {
                         "现在"
                     } else {
-                        conversationUpdatedAt[id]?.let(ConversationTimeLabels::label) ?: "最近"
+                        conversationUpdatedAt[id]?.let(ConversationTimeLabels::label) ?: "Reciente"
                     },
                     mode = ConversationModeUi.Chat,
                     isActiveRun = state.isStreaming,
