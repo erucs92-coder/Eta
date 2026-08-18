@@ -612,6 +612,6 @@ private fun List<ConversationSummaryUi>.groupForDrawer(): List<ConversationDrawe
 
 private fun ConversationSummaryUi.drawerSectionLabel(): String = when {
     isPinned -> "Fijado"
-    timeLabel == "Ahora" || timeLabel == "Reciente" || ":" in timeLabel -> "Hoy"
+    timeLabel == "Ahora" || timeLabel == "Reciente" || timeLabel == "现在" || timeLabel == "最近" || ":" in timeLabel -> "Hoy"
     else -> timeLabel
 }
