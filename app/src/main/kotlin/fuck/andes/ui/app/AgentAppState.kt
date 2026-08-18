@@ -1794,7 +1794,7 @@ internal class AgentAppState(
                         else -> "直接输入问题，必要时 Agent 会操作手机"
                     }.take(MAX_PREVIEW_CHARS),
                     timeLabel = if (state.isStreaming) {
-                        "现在"
+                        "Ahora"
                     } else {
                         conversationUpdatedAt[id]?.let(ConversationTimeLabels::label) ?: "Reciente"
                     },
