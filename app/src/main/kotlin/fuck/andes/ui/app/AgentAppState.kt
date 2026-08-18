@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import fuck.andes.FuckAndesApp
+import fuck.andes.R
 import fuck.andes.agent.accessibility.AgentAccessibilityService
 import fuck.andes.agent.device.AgentFileReferenceGateway
 import fuck.andes.agent.device.DeviceLocationProvider
@@ -1794,9 +1795,14 @@ internal class AgentAppState(
                         else -> "直接输入问题，必要时 Agent 会操作手机"
                     }.take(MAX_PREVIEW_CHARS),
                     timeLabel = if (state.isStreaming) {
-                        "Ahora"
+                        appContext.getString(R.string.now)
                     } else {
-                        conversationUpdatedAt[id]?.let(ConversationTimeLabels::label) ?: "Reciente"
+                        conversationUpdatedAt[id]?.let {
+                            ConversationTimeLabels.label(
+                                timestampMillis = it,
+                                recentLabel = appContext.getString(R.string.recent),
+                            )
+                        } ?: appContext.getString(R.string.recent)
                     },
                     mode = ConversationModeUi.Chat,
                     isActiveRun = state.isStreaming,

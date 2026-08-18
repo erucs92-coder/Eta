@@ -12,11 +12,13 @@ internal object ConversationTimeLabels {
 
     fun label(
         timestampMillis: Long,
+        recentLabel: String,
+        yesterdayLabel: String = "Ayer",
         nowMillis: Long = System.currentTimeMillis(),
         locale: Locale = Locale.getDefault(),
         timeZone: TimeZone = TimeZone.getDefault(),
     ): String {
-        if (timestampMillis <= 0L) return "Reciente"
+        if (timestampMillis <= 0L) return recentLabel
 
         val nowStart = startOfDay(nowMillis, locale, timeZone)
         val targetStart = startOfDay(timestampMillis, locale, timeZone)
@@ -24,7 +26,7 @@ internal object ConversationTimeLabels {
 
         return when {
             dayDelta <= 0 -> format("HH:mm", timestampMillis, locale, timeZone)
-            dayDelta == 1 -> "Ayer"
+            dayDelta == 1 -> yesterdayLabel
             dayDelta in 2..6 -> weekdayLabel(timestampMillis, locale, timeZone)
             sameYear(timestampMillis, nowMillis, locale, timeZone) ->
                 format("M-d", timestampMillis, locale, timeZone)
