@@ -260,12 +260,18 @@ private fun ConversationPanePanel(
             }
         }
     }
-    val groups = visibleConversations.groupForDrawer(
-        pinnedLabel = stringResource(R.string.pinned),
-        todayLabel = stringResource(R.string.today),
-        nowLabel = stringResource(R.string.now),
-        recentLabel = stringResource(R.string.recent),
-    )
+    val pinnedLabel = stringResource(R.string.pinned)
+    val todayLabel = stringResource(R.string.today)
+    val nowLabel = stringResource(R.string.now)
+    val recentLabel = stringResource(R.string.recent)
+    val groups = remember(visibleConversations, pinnedLabel, todayLabel, nowLabel, recentLabel) {
+        visibleConversations.groupForDrawer(
+            pinnedLabel = pinnedLabel,
+            todayLabel = todayLabel,
+            nowLabel = nowLabel,
+            recentLabel = recentLabel,
+        )
+    }
 
     Surface(
         modifier = modifier
@@ -462,7 +468,7 @@ private fun ConversationTextRow(
         ) {
             val renameText = stringResource(R.string.rename)
             val deleteText = stringResource(R.string.delete)
-            val renameItem = remember {
+            val renameItem = remember(renameText) {
                 DropdownItem(
                     text = renameText,
                     icon = { modifier ->
@@ -474,7 +480,7 @@ private fun ConversationTextRow(
                     },
                 )
             }
-            val deleteItem = remember {
+            val deleteItem = remember(deleteText) {
                 DropdownItem(
                     text = deleteText,
                     icon = { modifier ->
