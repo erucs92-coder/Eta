@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import fuck.andes.R
 import fuck.andes.ui.model.ActiveRunSummaryUi
 import fuck.andes.ui.model.RunStatusUi
 import top.yukonga.miuix.kmp.basic.ButtonDefaults
@@ -67,7 +69,7 @@ fun AgentStatusCard(
                 )
                 if (activeRun.status == RunStatusUi.Running) {
                     TextButton(
-                        text = "停止",
+                        text = stringResource(R.string.stop),
                         onClick = onStopRun,
                         colors = ButtonDefaults.textButtonColors(),
                     )

@@ -46,6 +46,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
@@ -57,6 +58,7 @@ import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
 import com.composables.icons.lucide.R as LucideR
+import fuck.andes.R
 import fuck.andes.ui.model.ConversationPaneUiState
 import fuck.andes.ui.model.ConversationSummaryUi
 import kotlin.math.roundToInt
@@ -146,8 +148,8 @@ fun ConversationSidePaneScaffold(
             0f
         }
 
-        // NavDisplay 的退出 Scene 在转场期间仍会保留组合；仅允许已稳定显示的首页
-        // 处理侧栏返回，避免它抢先消费二级页面的第一次返回事件。
+        // La escena de salida de NavDisplay permanece en composición durante la transición.
+        // Solo permitimos que la pantalla principal estable procese el primer "atrás" del panel.
         NavigationBackHandler(
             state = navigationEventState,
             isBackEnabled = visible &&
@@ -178,8 +180,8 @@ fun ConversationSidePaneScaffold(
                 .pointerInput(visible, paneWidthPx) {
                     detectHorizontalDragGestures(
                         onDragStart = { offset ->
-                            // 打开时仅在主内容区（右侧）接受拖拽关闭，避免拦截会话列表的长按；
-                            // 关闭时仅从左缘拖拽打开。
+                            // Abierto: cerrar con gesto solo en el panel principal (derecha).
+                            // Cerrado: abrir solo con gesto desde el borde izquierdo.
                             acceptsDrag = if (visible) {
                                 offset.x >= paneWidthPx - edgeSwipeWidthPx
                             } else {
@@ -341,7 +343,7 @@ private fun PaneActionBar(
                     onSearch = onSearchChange,
                     expanded = false,
                     onExpandedChange = {},
-                    label = "搜索全部对话",
+                    label = stringResource(R.string.search_all_conversations),
                 )
             },
             content = {},
@@ -455,7 +457,7 @@ private fun ConversationTextRow(
         ) {
             val renameItem = remember {
                 DropdownItem(
-                    text = "重命名",
+                    text = stringResource(R.string.rename),
                     icon = { modifier ->
                         Icon(
                             painter = painterResource(LucideR.drawable.lucide_ic_pencil),
@@ -467,7 +469,7 @@ private fun ConversationTextRow(
             }
             val deleteItem = remember {
                 DropdownItem(
-                    text = "删除",
+                    text = stringResource(R.string.delete),
                     icon = { modifier ->
                         Icon(
                             painter = painterResource(LucideR.drawable.lucide_ic_trash_2),
@@ -513,7 +515,11 @@ private fun ConversationTextRow(
 @Composable
 private fun EmptyConversations(isSearching: Boolean) {
     Text(
-        text = if (isSearching) "没有匹配的对话" else "还没有对话",
+        text = if (isSearching) {
+            stringResource(R.string.no_matching_conversations)
+        } else {
+            stringResource(R.string.no_conversations_yet)
+        },
         color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
         style = MiuixTheme.textStyles.body2,
         fontWeight = FontWeight.Medium,
@@ -539,27 +545,27 @@ private fun PaneDock(
     ) {
         DockButton(
             icon = LucideR.drawable.lucide_ic_settings,
-            label = "设置",
+            label = stringResource(R.string.nav_settings),
             onClick = onOpenSettings,
         )
         DockButton(
             icon = LucideR.drawable.lucide_ic_cpu,
-            label = "模型",
+            label = stringResource(R.string.nav_models),
             onClick = onOpenModelProviders,
         )
         DockButton(
             icon = LucideR.drawable.lucide_ic_package,
-            label = "工具",
+            label = stringResource(R.string.nav_tools),
             onClick = onOpenTools,
         )
         DockButton(
             icon = LucideR.drawable.lucide_ic_puzzle,
-            label = "技能",
+            label = stringResource(R.string.nav_skills),
             onClick = onOpenSkills,
         )
         DockButton(
             icon = LucideR.drawable.lucide_ic_lock,
-            label = "权限",
+            label = stringResource(R.string.nav_permissions),
             onClick = onOpenPermissions,
         )
     }
@@ -605,7 +611,7 @@ private fun List<ConversationSummaryUi>.groupForDrawer(): List<ConversationDrawe
 }
 
 private fun ConversationSummaryUi.drawerSectionLabel(): String = when {
-    isPinned -> "置顶"
-    timeLabel == "现在" || timeLabel == "最近" || ":" in timeLabel -> "今天"
+    isPinned -> "Fijado"
+    timeLabel == "Ahora" || timeLabel == "Reciente" || ":" in timeLabel -> "Hoy"
     else -> timeLabel
 }

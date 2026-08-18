@@ -1,5 +1,6 @@
 package fuck.andes.ui.components
 
+import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -12,8 +13,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import fuck.andes.R
 import fuck.andes.ui.model.PermissionStatusUi
 import fuck.andes.ui.model.RunStatusUi
 import top.yukonga.miuix.kmp.basic.BasicComponent
@@ -23,23 +26,22 @@ import top.yukonga.miuix.kmp.basic.Text
 import androidx.compose.ui.res.painterResource
 import com.composables.icons.lucide.R as LucideR
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import androidx.compose.runtime.Composable
 
-// 语义状态色
+// Colores semánticos de estado.
 val StatusSuccess = Color(0xFF00BD13)
 val StatusWarning = Color(0xFFFFB200)
 val StatusError: Color @Composable get() = MiuixTheme.colorScheme.error
 val StatusRunning: Color @Composable get() = MiuixTheme.colorScheme.primary
 val StatusIdle: Color @Composable get() = MiuixTheme.colorScheme.onSurfaceVariantSummary
 
-// 图标 tint 色系（与设置页一致，统一使用 ColorOS 设置主色）
-// 不要用 coui_color_*_variant、截图平均取样色或 Material/iOS 近似色替代。
+// Paleta de tint para iconos (alineada con Ajustes de ColorOS).
+// No sustituir con variantes coui_color_*_variant ni aproximaciones Material/iOS.
 val IconTintBlue = Color(0xFF0066FF)
 val IconTintGreen = Color(0xFF00BD13)
 val IconTintPurple = Color(0xFF0066FF)
 val IconTintOrange = Color(0xFFFF7700)
 
-// ── RunStatusUi 映射 ──────────────────────────────────────────────────
+// ── Mapeo de RunStatusUi ───────────────────────────────────────────────
 
 @Composable
 fun RunStatusUi.color(): Color = when (this) {
@@ -49,14 +51,15 @@ fun RunStatusUi.color(): Color = when (this) {
     RunStatusUi.Cancelled -> StatusIdle
 }
 
+@Composable
 fun RunStatusUi.label(): String = when (this) {
-    RunStatusUi.Running -> "运行中"
-    RunStatusUi.Success -> "已完成"
-    RunStatusUi.Failed -> "失败"
-    RunStatusUi.Cancelled -> "已取消"
+    RunStatusUi.Running -> stringResource(R.string.run_status_running)
+    RunStatusUi.Success -> stringResource(R.string.run_status_success)
+    RunStatusUi.Failed -> stringResource(R.string.run_status_failed)
+    RunStatusUi.Cancelled -> stringResource(R.string.run_status_cancelled)
 }
 
-// ── PermissionStatusUi 映射 ───────────────────────────────────────────
+// ── Mapeo de PermissionStatusUi ────────────────────────────────────────
 
 @Composable
 fun PermissionStatusUi.color(): Color = when (this) {
@@ -66,16 +69,17 @@ fun PermissionStatusUi.color(): Color = when (this) {
     PermissionStatusUi.Disabled -> StatusIdle
 }
 
+@Composable
 fun PermissionStatusUi.label(): String = when (this) {
-    PermissionStatusUi.Available -> "已就绪"
-    PermissionStatusUi.Warning -> "需注意"
-    PermissionStatusUi.Missing -> "未授权"
-    PermissionStatusUi.Disabled -> "已禁用"
+    PermissionStatusUi.Available -> stringResource(R.string.permission_status_ready)
+    PermissionStatusUi.Warning -> stringResource(R.string.permission_status_attention)
+    PermissionStatusUi.Missing -> stringResource(R.string.permission_status_not_authorized)
+    PermissionStatusUi.Disabled -> stringResource(R.string.permission_status_disabled)
 }
 
-// ── 共享 UI 组件 ──────────────────────────────────────────────────────
+// ── Componentes UI compartidos ─────────────────────────────────────────
 
-/** 带彩色 tint 的图标，用于列表项左侧（与设置页风格一致）。 */
+/** Icono con tint de color para el lado izquierdo de ítems de lista. */
 @Composable
 fun TintedIcon(
     icon: ImageVector,
@@ -89,7 +93,7 @@ fun TintedIcon(
     )
 }
 
-/** Card 内分隔线，缩进对齐 BasicComponent 文字起始位置。 */
+/** Separador en Card con sangría alineada al texto de BasicComponent. */
 @Composable
 fun PrefDivider() {
     HorizontalDivider(
@@ -98,8 +102,8 @@ fun PrefDivider() {
 }
 
 /**
- * 带箭头的列表项，复刻 ArrowPreference 行为但 title 与 summary 之间有 2dp 呼吸间距。
- * 用于需要 title + summary + 右侧箭头的场景。
+ * Ítem de lista con flecha; mantiene 2dp entre título y resumen.
+ * Úsalo cuando se requiera título + resumen + flecha a la derecha.
  */
 @Composable
 fun ArrowItem(
