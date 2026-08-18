@@ -42,6 +42,7 @@ class ConversationTimeLabelsTest {
     private fun label(timestamp: Long, now: Long): String =
         ConversationTimeLabels.label(
             timestampMillis = timestamp,
+            recentLabel = "Reciente",
             nowMillis = now,
             locale = locale,
             timeZone = timeZone,
