@@ -13,6 +13,10 @@
     <string name="nav_tools">Herramientas</string>
     <string name="nav_skills">Skills</string>
     <string name="nav_permissions">Permisos</string>
+    <string name="pinned">Fijado</string>
+    <string name="today">Hoy</string>
+    <string name="now">Ahora</string>
+    <string name="recent">Reciente</string>
     <string name="permission_health_title">Estado de permisos</string>
     <string name="permission_health_ok">Normal</string>
     <string name="permission_health_issue_count">%1$d elementos requieren atención</string>

@@ -260,7 +260,12 @@ private fun ConversationPanePanel(
             }
         }
     }
-    val groups = remember(visibleConversations) { visibleConversations.groupForDrawer() }
+    val groups = visibleConversations.groupForDrawer(
+        pinnedLabel = stringResource(R.string.pinned),
+        todayLabel = stringResource(R.string.today),
+        nowLabel = stringResource(R.string.now),
+        recentLabel = stringResource(R.string.recent),
+    )
 
     Surface(
         modifier = modifier
@@ -455,9 +460,11 @@ private fun ConversationTextRow(
             alignment = PopupPositionProvider.Align.BottomEnd,
             onDismissRequest = { showActionMenu = false },
         ) {
+            val renameText = stringResource(R.string.rename)
+            val deleteText = stringResource(R.string.delete)
             val renameItem = remember {
                 DropdownItem(
-                    text = stringResource(R.string.rename),
+                    text = renameText,
                     icon = { modifier ->
                         Icon(
                             painter = painterResource(LucideR.drawable.lucide_ic_pencil),
@@ -469,7 +476,7 @@ private fun ConversationTextRow(
             }
             val deleteItem = remember {
                 DropdownItem(
-                    text = stringResource(R.string.delete),
+                    text = deleteText,
                     icon = { modifier ->
                         Icon(
                             painter = painterResource(LucideR.drawable.lucide_ic_trash_2),
@@ -595,11 +602,21 @@ private data class ConversationDrawerGroup(
     val items: List<ConversationSummaryUi>,
 )
 
-private fun List<ConversationSummaryUi>.groupForDrawer(): List<ConversationDrawerGroup> {
+private fun List<ConversationSummaryUi>.groupForDrawer(
+    pinnedLabel: String,
+    todayLabel: String,
+    nowLabel: String,
+    recentLabel: String,
+): List<ConversationDrawerGroup> {
     if (isEmpty()) return emptyList()
     val groups = mutableListOf<ConversationDrawerGroup>()
     for (conversation in this) {
-        val label = conversation.drawerSectionLabel()
+        val label = conversation.drawerSectionLabel(
+            pinnedLabel = pinnedLabel,
+            todayLabel = todayLabel,
+            nowLabel = nowLabel,
+            recentLabel = recentLabel,
+        )
         val last = groups.lastOrNull()
         if (last?.label == label) {
             groups[groups.lastIndex] = last.copy(items = last.items + conversation)
@@ -610,8 +627,13 @@ private fun List<ConversationSummaryUi>.groupForDrawer(): List<ConversationDrawe
     return groups
 }
 
-private fun ConversationSummaryUi.drawerSectionLabel(): String = when {
-    isPinned -> "Fijado"
-    timeLabel == "Ahora" || timeLabel == "Reciente" || timeLabel == "现在" || timeLabel == "最近" || ":" in timeLabel -> "Hoy"
+private fun ConversationSummaryUi.drawerSectionLabel(
+    pinnedLabel: String,
+    todayLabel: String,
+    nowLabel: String,
+    recentLabel: String,
+): String = when {
+    isPinned -> pinnedLabel
+    timeLabel == nowLabel || timeLabel == recentLabel || ":" in timeLabel -> todayLabel
     else -> timeLabel
 }
